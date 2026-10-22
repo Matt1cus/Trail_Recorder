@@ -1,8 +1,8 @@
 [
   {
-    "name": "John",
-    "date": "1980-20-11",
+    "name": "John's hike",
+    "date": "1980-11-20",
     "distance_mi": 20.0,
-    "duration_min": 4920
+    "duration_min": 1920
   }
 ]

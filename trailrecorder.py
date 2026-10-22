@@ -1,6 +1,9 @@
 import json
 import os
 
+#hey its me its recordity ask me anything  I know one thing your hikity, give me your datity,
+
+
 data_file = "hikes.json" #how we will store hikes in json
 
 def load_hikes():
@@ -25,6 +28,9 @@ def add_hike(hikes):
     distance = float(input("Distance (miles): "))
     duration = int(input("Duration  (minutes): ")) #these are the stuff the user inputs in, potentially replaced through GPS?
 
+    rating = int(input("Rating (1-5) : "))
+    notes = input("Notes: (How did it feel? ")
+
     hike = {
         "name": name,
         "date": date,
@@ -43,6 +49,8 @@ def list_hikes(hikes):
 
         print("\n--- Your Hikes! ---") #hikes
         for number, hike in enumerate(hikes, start=1):
+            rating = hike.get("rating")
+            stars = f"{rating}/5" if rating else "unrated"
             print(
                 f"{number}. {hike['date']} {hike['name']}"
                 f"{hike['distance_mi']} mi {hike['duration_min']} min"
@@ -50,8 +58,38 @@ def list_hikes(hikes):
         total_miles = sum(hike['distance_mi'] for hike in hikes)
         print(f"\nTotal: {len(hikes)} hikes, {total_miles:.1f} miles \n")
 
-#main menu
+# lists the stats of the hike (hikes in V1 do not have this data).
+def show_stats(hikes):
+    if not hikes:
+        print("\nNo hikes logged in yet")
+        return
 
+    total_miles = sum(hike['distance_mi'] for hike in hikes)
+    total_minutes = sum(hike['duration_min'] for hike in hikes)
+    average_distance = total_miles / len(hikes)
+    average_pace = total_minutes / total_minutes
+
+    longest = max(hikes, key=lambda hike: hike['distance_mi'])
+
+    #gui interface
+    print("\n--- Your Stats! ---")
+    print(f"Hikes Logged:         {len(hikes)}")
+    print(f"Total Distance:       {total_miles:.1f} mi")
+    print(f"Average Distance:     {average_distance:.1f} mi")
+    print(f"Average Pace:         {average_pace:.1f} min/mi ({60 / average_pace:.1} mph")
+    print(f"Longest Hike:         {longest['name']} ({longest['distance_mi']} mi)")
+
+    rated = [hike for hike in hikes if hike.get("rating")]
+    if rated:
+        average_rating = sum(hike["rating"] for hike in rated) / len(rated)
+        best = max(rated, key=lambda hike: hike["rating"])
+        print(f"Average Rating:     {average_rating:.1f}/5 rating ({len(rated)} rated)")
+        print(f"Top-Rated Hike:     {best['name']} ({best['rating']}/5)")
+    else:
+        print("No ratings recorded - Please rate a hike to see rating stats.")
+    print()
+
+#main menu
 def main():
     hikes = load_hikes()
 
@@ -59,7 +97,8 @@ def main():
         print("Trail Recorder")
         print("1. Add a hike")
         print("2. List all hikes")
-        print("3, Quit")
+        print("3, Stats")
+        print("4. Quit")
         choice = input("Enter your choice: ")
 
         if choice == "1":
@@ -67,7 +106,9 @@ def main():
         elif choice == "2":
             list_hikes(hikes)
         elif choice == "3":
-            print("Happy Hikes!")
+            show_stats(hikes)
+        elif choice == "4":
+            print("Enjoy Your Hike!")
             break
         else:
             print("Invalid choice. Please enter your choice again.")
@@ -76,6 +117,8 @@ def main():
 # Only run main when file is run directly (no importation)
 if __name__ == "__main__":
     main()
+
+
 
 
 
