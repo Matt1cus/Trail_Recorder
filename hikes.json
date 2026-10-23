@@ -4,5 +4,17 @@
     "date": "1980-11-20",
     "distance_mi": 20.0,
     "duration_min": 1920
+  },
+  {
+    "name": "Whopper",
+    "date": "1999-99-99",
+    "distance_mi": 25.0,
+    "duration_min": 290
+  },
+  {
+    "name": "John",
+    "date": "1980-24-11",
+    "distance_mi": 20.0,
+    "duration_min": 250
   }
 ]

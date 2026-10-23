@@ -29,7 +29,7 @@ def add_hike(hikes):
     duration = int(input("Duration  (minutes): ")) #these are the stuff the user inputs in, potentially replaced through GPS?
 
     rating = int(input("Rating (1-5) : "))
-    notes = input("Notes: (How did it feel? ")
+    notes = input("Notes: (How did it feel?) ")
 
     hike = {
         "name": name,
@@ -39,7 +39,7 @@ def add_hike(hikes):
     }
     hikes.append(hike)
     save_hikes(hikes)
-    print(f"Saved '{name}'! \n") #appending data to json file.
+    print(f"Saved '{name}' {make_stars(rating)}\n") #appending data to json file.
 
 def list_hikes(hikes):
         """Print every hike, then the total miles recorded"""
@@ -50,11 +50,13 @@ def list_hikes(hikes):
         print("\n--- Your Hikes! ---") #hikes
         for number, hike in enumerate(hikes, start=1):
             rating = hike.get("rating")
-            stars = f"{rating}/5" if rating else "unrated"
+            stars = make_stars(rating) if rating else "unrated"
             print(
                 f"{number}. {hike['date']} {hike['name']}"
-                f"{hike['distance_mi']} mi {hike['duration_min']} min"
+                f" {hike['distance_mi']} mi {hike['duration_min']} min"
             )
+
+
         total_miles = sum(hike['distance_mi'] for hike in hikes)
         print(f"\nTotal: {len(hikes)} hikes, {total_miles:.1f} miles \n")
 
@@ -71,23 +73,28 @@ def show_stats(hikes):
 
     longest = max(hikes, key=lambda hike: hike['distance_mi'])
 
-    #gui interface
+    #gui interface for stats
     print("\n--- Your Stats! ---")
     print(f"Hikes Logged:         {len(hikes)}")
     print(f"Total Distance:       {total_miles:.1f} mi")
     print(f"Average Distance:     {average_distance:.1f} mi")
-    print(f"Average Pace:         {average_pace:.1f} min/mi ({60 / average_pace:.1} mph")
+    print(f"Average pace:         {average_pace:.1f} min/mi ({60 / average_pace:.1f} mph)")
     print(f"Longest Hike:         {longest['name']} ({longest['distance_mi']} mi)")
 
     rated = [hike for hike in hikes if hike.get("rating")]
     if rated:
         average_rating = sum(hike["rating"] for hike in rated) / len(rated)
         best = max(rated, key=lambda hike: hike["rating"])
-        print(f"Average Rating:     {average_rating:.1f}/5 rating ({len(rated)} rated)")
+        print(f"Average Rating:     {make_stars(average_rating)}")
         print(f"Top-Rated Hike:     {best['name']} ({best['rating']}/5)")
     else:
         print("No ratings recorded - Please rate a hike to see rating stats.")
     print()
+
+#star system for ratings
+def make_stars(rating):
+    filled = round(rating)
+    return "★" * filled + "☆" * (5 - filled)
 
 #main menu
 def main():
@@ -97,7 +104,7 @@ def main():
         print("Trail Recorder")
         print("1. Add a hike")
         print("2. List all hikes")
-        print("3, Stats")
+        print("3. Stats")
         print("4. Quit")
         choice = input("Enter your choice: ")
 
@@ -117,8 +124,6 @@ def main():
 # Only run main when file is run directly (no importation)
 if __name__ == "__main__":
     main()
-
-
 
 
 
