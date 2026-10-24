@@ -16,5 +16,13 @@
     "date": "1980-24-11",
     "distance_mi": 20.0,
     "duration_min": 250
+  },
+  {
+    "name": "Whoopers",
+    "date": "1999-11-27",
+    "distance_mi": 25.0,
+    "duration_min": 250,
+    "rating": 4,
+    "notes": "Okay"
   }
 ]

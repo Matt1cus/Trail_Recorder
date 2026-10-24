@@ -35,7 +35,10 @@ def add_hike(hikes):
         "name": name,
         "date": date,
         "distance_mi": distance,
-        "duration_min": duration
+        "duration_min": duration,
+        "rating": rating,
+        "notes": notes,
+
     }
     hikes.append(hike)
     save_hikes(hikes)
@@ -54,6 +57,7 @@ def list_hikes(hikes):
             print(
                 f"{number}. {hike['date']} {hike['name']}"
                 f" {hike['distance_mi']} mi {hike['duration_min']} min"
+                f" {stars}"
             )
 
 
@@ -69,7 +73,7 @@ def show_stats(hikes):
     total_miles = sum(hike['distance_mi'] for hike in hikes)
     total_minutes = sum(hike['duration_min'] for hike in hikes)
     average_distance = total_miles / len(hikes)
-    average_pace = total_minutes / total_minutes
+    average_pace = total_minutes / total_miles
 
     longest = max(hikes, key=lambda hike: hike['distance_mi'])
 
