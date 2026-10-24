@@ -1,5 +1,7 @@
 import json
 import os
+from datetime import datetime
+
 
 #hey its me its recordity ask me anything  I know one thing your hikity, give me your datity,
 
@@ -23,21 +25,26 @@ def save_hikes(hikes):
 def add_hike(hikes):
     """Ask the user about a hike and add it to list"""
     print("\n--- Log New Hike ---")
-    name = input("Hike name: ")
-    date = input("Date (YYYY-MM-DD): ")
-    distance = float(input("Distance (miles): "))
-    duration = int(input("Duration  (minutes): ")) #these are the stuff the user inputs in, potentially replaced through GPS?
+    name = ask_text("Hike name: ")
+    date = ask_date("Date (YYYY-MM-DD): ")
+    distance = ask_number("Distance (miles): ", 0.1, 999999)
+    duration = ask_number("Duration  (minutes): ", 1, 9999999, whole=True) #these are the stuff the user inputs in, potentially replaced through GPS?
 
-    rating = int(input("Rating (1-5) : "))
+    rating = ask_number("Rating (1-5) : ", 1, 5, whole=True)
     notes = input("Notes: (How did it feel?) ")
 
+    print("Weather during the hike: ")
+    temp_f = ask_number("Temp (F): ", -40, 130, whole=True)
+    wind_mph = ask_number("Wind MPH (mph): ", 0, 100, whole=True)
+    rain = ask_for_yes_or_no("Did it rain (y/n): ")
     hike = {
         "name": name,
         "date": date,
         "distance_mi": distance,
-        "duration_min": duration,
+        "duration_3min": duration,
         "rating": rating,
         "notes": notes,
+        "weather": {"temp_f": temp_f, "wind_mph": wind_mph, "rain": rain},
 
     }
     hikes.append(hike)
@@ -54,10 +61,17 @@ def list_hikes(hikes):
         for number, hike in enumerate(hikes, start=1):
             rating = hike.get("rating")
             stars = make_stars(rating) if rating else "unrated"
+
+            weather = hike.get("weather")  # only Day 4+ json files have the data
+            if weather:
+                rain_text = "rain" if weather["rain"] else "dry"
+                weather_text = f"{weather['temp_f']:.0f}F, {weather['wind_mph']:.0f} mph, {rain_text}"
+            else:
+                weather_text = "no weather"
             print(
                 f"{number}. {hike['date']} {hike['name']}"
                 f" {hike['distance_mi']} mi {hike['duration_min']} min"
-                f" {stars}"
+                f" {stars} | {weather_text}"
             )
 
 
@@ -99,6 +113,47 @@ def show_stats(hikes):
 def make_stars(rating):
     filled = round(rating)
     return "★" * filled + "☆" * (5 - filled)
+
+#make sure that the inputs are correct format text for text, number for number, etc
+
+def ask_text(prompt):
+    while True:
+        text = input(prompt).strip()
+        if text:
+            return text
+        print("Cannot be empty.")
+
+def ask_number(prompt, min_value, max_value, whole=False): #make sure user enters no. in range
+    while True:
+        text = input(prompt)
+        try:
+            value = int(text) if whole else float(text)
+
+        except ValueError:
+            print("Please enter a number.")
+            continue
+        if min_value <= value <= max_value:
+            return value
+        print(f"Please enter a number between {min_value} and {max_value}.")
+
+def ask_for_yes_or_no(prompt):
+    while True:
+        answer = input(prompt).strip().lower()
+        if answer in ("y", "yes"):
+            return True
+        if answer in ("n", "no"):
+            return False
+        print("Please enter yes or no.")
+
+def ask_date(prompt):
+    while True:
+        text = input(prompt).strip()
+        try:
+            datetime.strptime(text, "%Y-%m-%d")
+            return text
+        except ValueError:
+            print("Please enter a date, use format YYYY-MM-DD.")
+
 
 #main menu
 def main():

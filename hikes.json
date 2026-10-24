@@ -24,5 +24,18 @@
     "duration_min": 250,
     "rating": 4,
     "notes": "Okay"
+  },
+  {
+    "name": "John's new hike",
+    "date": "1980-12-20",
+    "distance_mi": 205.0,
+    "duration_min": 92,
+    "rating": 4,
+    "notes": "Okay",
+    "weather": {
+      "temp_f": 90,
+      "wind_mph": 50,
+      "rain": false
+    }
   }
 ]
