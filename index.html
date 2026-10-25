@@ -2,10 +2,25 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Trail Recorder</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    pre  { background: #f4f4f4; padding: 1rem; overflow-x: auto; border-radius: 6px; font-size: 0.85rem; }
+  </style>
 </head>
 <body>
   <h1>Trail Recorder</h1>
   <p>A Python hike log that tracks your hikes, weather, and personal records.</p>
+
+  <h2>Source code</h2>
+  <pre><code id="code">Loading...</code></pre>
+
+  <script>
+    fetch("trailrecorder.py")
+      .then(response => response.text())
+      .then(text => { document.getElementById("code").textContent = text; })
+      .catch(() => { document.getElementById("code").textContent = "Could not load the code."; });
+  </script>
 </body>
 </html>
