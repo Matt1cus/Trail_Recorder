@@ -37,5 +37,19 @@
       "wind_mph": 50,
       "rain": false
     }
+  },
+  {
+    "name": "Wozers",
+    "date": "1980-12-30",
+    "distance_mi": 25.0,
+    "duration_min": 250,
+    "rating": 5,
+    "notes": "Okay",
+    "location": "London",
+    "weather": {
+      "temp_f": 47,
+      "wind_mph": 16,
+      "rain": false
+    }
   }
 ]

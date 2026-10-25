@@ -1,7 +1,8 @@
 import json
 import os
 from datetime import datetime
-
+import urllib.parse
+import urllib.request
 
 #hey its me its recordity ask me anything  I know one thing your hikity, give me your datity,
 
@@ -20,6 +21,85 @@ def save_hikes(hikes):
     with open(data_file, "w") as f:
         json.dump(hikes, f, indent=2) #dumps json
 
+#weather input using Open-Meteo
+
+def get_json(url, params):
+    full_url = url + "?" + urllib.parse.urlencode(params)
+    with urllib.request.urlopen(full_url, timeout=10) as response:
+        return json.load(response)
+
+def find_place(place_name): #convert city name to long and lat
+    try:
+        data = get_json("https://geocoding-api.open-meteo.com/v1/search",
+                        {"name": place_name, "count": 1})
+        result = data["results"][0]
+        return result["latitude"], result["longitude"], result["name"]
+    except (OSError, KeyError, IndexError, ValueError):
+        return None
+
+def fetch_weather(place_name, date):
+    place = find_place(place_name)
+    if place is None: #checks to see if you entered
+        return None
+    latitude, longitude, found_name = place
+
+    #ooh boy
+    #this should get the forcast for the recent days and the archived one for the older dates past 90
+    days_ago = (datetime.now() - datetime.strptime(date, "%Y-%m-%d")).days
+    if days_ago > 90: #sets when to look for archive data
+        url = "https://archive-api.open-meteo.com/v1/archive"
+    else:
+        url = "https://api.open-meteo.com/v1/forecast" #gets the data for before 90 days
+
+    try:
+        data = get_json(url, {
+            "latitude": latitude, "longitude": longitude,
+            "start_date": date, "end_date": date,
+            "daily": "temperature_2m_mean,wind_speed_10m_max,precipitation_sum",
+            "temperature_unit": "fahrenheit", "wind_speed_unit": "mph",
+            "timezone": "auto",
+        })
+        daily = data["daily"]
+        return {
+            "temp_f": round(daily["temperature_2m_mean"][0]),
+            "wind_mph": round(daily["wind_speed_10m_max"][0]),
+            "rain": daily["precipitation_sum"][0] >= 1.0,
+        }, found_name
+    except (OSError, KeyError, IndexError, TypeError, ValueError):
+        return None
+
+def get_weather(date):
+    """Try the automatic lookup first; fall back to manual entry."""
+    place_name = input("Location (city name, or press Enter to skip the lookup): ").strip()
+
+    if not place_name:
+        return ask_weather_manually(), ""
+
+    print("Looking up weather...")
+    result = fetch_weather(place_name, date)
+
+    if result is not None:
+        weather, found_name = result
+        rain_text = "rain" if weather["rain"] else "dry"
+        print(f"Found for {found_name}: {weather['temp_f']}F, "
+              f"{weather['wind_mph']} mph wind, {rain_text}")
+        if ask_for_yes_or_no("Use this weather? (y/n): "):
+            return weather, place_name
+        print("OK.")
+    else:
+        print("Couldn't get weather automatically.")
+
+    return ask_weather_manually(), place_name
+
+def ask_weather_manually():
+    print("Weather during the hike: ")
+    temp_f = ask_number("Temp (F): ", -40, 130, whole=True)
+    wind_mph = ask_number("Wind MPH (mph): ", 0, 100, whole=True)
+    rain = ask_for_yes_or_no("Did it rain (y/n): ")
+    return {"temp_f": temp_f, "wind_mph": wind_mph, "rain": rain}
+
+
+
 #commands
 
 def add_hike(hikes):
@@ -32,19 +112,17 @@ def add_hike(hikes):
 
     rating = ask_number("Rating (1-5) : ", 1, 5, whole=True)
     notes = input("Notes: (How did it feel?) ")
+    weather, location = get_weather(date)
 
-    print("Weather during the hike: ")
-    temp_f = ask_number("Temp (F): ", -40, 130, whole=True)
-    wind_mph = ask_number("Wind MPH (mph): ", 0, 100, whole=True)
-    rain = ask_for_yes_or_no("Did it rain (y/n): ")
     hike = {
         "name": name,
         "date": date,
         "distance_mi": distance,
-        "duration_3min": duration,
+        "duration_min": duration,
         "rating": rating,
         "notes": notes,
-        "weather": {"temp_f": temp_f, "wind_mph": wind_mph, "rain": rain},
+        "location": location,
+        "weather": weather,
 
     }
     hikes.append(hike)
