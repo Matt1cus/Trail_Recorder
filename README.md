@@ -33,8 +33,10 @@ Personal Records:
 
 <img width="424" height="105" alt="Screenshot 2026-10-25 at 2 08 13 PM" src="https://github.com/user-attachments/assets/ea9b6995-c332-4206-934e-b0795ff9b75b" />
 
+Demo Link (MacOS Silicon Only, Download): [https://github.com/Matt1cus/Trail_Recorder/releases/tag/v1.0.0](url)
 
-Demo Link: [https://colab.research.google.com/drive/1aoYzxIdHFXQaBGNwk-i-7phfxMnyokXb?usp=sharing](url)
+
+(If you don't want to download or not using MacOS): [https://colab.research.google.com/drive/1aoYzxIdHFXQaBGNwk-i-7phfxMnyokXb?usp=sharing](url)
 
 
 Claude AI was used for helping me debug code & for helping me with learning how to use Open-Meteo and debugging my attempts at using said api. 
