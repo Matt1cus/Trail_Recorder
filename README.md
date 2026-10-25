@@ -1,5 +1,8 @@
 This is a internet/offline cli-based Hike Tracker. 
-It utilizes the free Open-Meteo for obtaining local weather online. 
+It is a command line interface application that records hikes and collects data like hike length, duration, weather, and is able to show monthly trends, your recorded PRs, and your personal ratings. 
+I used Open-Meteo to help find automatically find the weather by entering the name of the location you are in. 
+However, this software can be used entirely **offline**, and has checks integrated so that incorrect inputs are rejected (ex: text when asking for a date).
+
 
 These are the options when running the python script:
 
