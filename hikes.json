@@ -1,55 +1,42 @@
 [
   {
-    "name": "John's hike",
-    "date": "1980-11-20",
-    "distance_mi": 20.0,
-    "duration_min": 1920
+    "name": "Neighborhood Walk",
+    "date": "2026-08-30",
+    "distance_mi": 2.0,
+    "duration_min": 50
   },
   {
-    "name": "Whopper",
-    "date": "1999-99-99",
-    "distance_mi": 25.0,
-    "duration_min": 290
-  },
-  {
-    "name": "John",
-    "date": "1980-24-11",
-    "distance_mi": 20.0,
-    "duration_min": 250
-  },
-  {
-    "name": "Whoopers",
-    "date": "1999-11-27",
-    "distance_mi": 25.0,
-    "duration_min": 250,
+    "name": "Lake Loop",
+    "date": "2026-09-06",
+    "distance_mi": 3.0,
+    "duration_min": 66,
     "rating": 4,
-    "notes": "Okay"
-  },
-  {
-    "name": "John's new hike",
-    "date": "1980-12-20",
-    "distance_mi": 205.0,
-    "duration_min": 92,
-    "rating": 4,
-    "notes": "Okay",
+    "notes": "Warm and calm, lots of ducks",
+    "location": "Boulder",
     "weather": {
-      "temp_f": 90,
-      "wind_mph": 50,
+      "temp_f": 70,
+      "wind_mph": 5,
       "rain": false
     }
   },
   {
-    "name": "Wozers",
-    "date": "1980-12-30",
-    "distance_mi": 25.0,
-    "duration_min": 250,
+    "name": "Ridge Trail",
+    "date": "2026-09-13",
+    "distance_mi": 4.0,
+    "duration_min": 84,
     "rating": 5,
-    "notes": "Okay",
-    "location": "London",
-    "weather": {
-      "temp_f": 47,
-      "wind_mph": 16,
-      "rain": false
-    }
+    "notes": "Perfect light, great views",
+    "location": "Boulder",
+    "weather": { "temp_f": 62, "wind_mph": 8, "rain": false }
+  },
+  {
+    "name": "Creek Path",
+    "date": "2026-09-20",
+    "distance_mi": 3.5,
+    "duration_min": 77,
+    "rating": 3,
+    "notes": "Muddy after the storm",
+    "location": "Boulder",
+    "weather": { "temp_f": 55, "wind_mph": 12, "rain": true }
   }
 ]

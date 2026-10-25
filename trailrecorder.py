@@ -3,14 +3,15 @@ import os
 from datetime import datetime
 import urllib.parse
 import urllib.request
+import shutil
 
-#hey its me its recordity ask me anything  I know one thing your hikity, give me your datity,
+#hey its me its  trail recordity ask me anything  I know one thing your hikity, give me your dateity,
 
 
 data_file = "hikes.json" #how we will store hikes in json
 
 def load_hikes():
-    """Read hikes from file. Return empty list if file not found or no file yet."""
+    #Read hikes from file. Return empty list if file not found or no file yet.
     if not os.path.exists(data_file):
         return [] #this returns the empty list
     with open(data_file, "r") as f:
@@ -130,7 +131,6 @@ def add_hike(hikes):
     print(f"Saved '{name}' {make_stars(rating)}\n") #appending data to json file.
 
 def list_hikes(hikes):
-        """Print every hike, then the total miles recorded"""
         if not hikes:
             print("\nNo hikes logged in yet")
             return
@@ -233,7 +233,103 @@ def ask_date(prompt):
             print("Please enter a date, use format YYYY-MM-DD.")
 
 
-#main menu
+
+
+#calculates the trends monthly
+def show_trends(hikes): #showing avg distance per month using text bars
+    if not hikes:
+        print("\nNo hikes logged in yet")
+        return
+
+    months = {}
+    for hike in hikes:
+        month = hike["date"][:7]
+        months.setdefault(month, []).append(hike)
+
+    print("\n Monthly Trends!")
+    paces = []
+    for month in sorted(months):
+            group = months[month]
+            miles = sum(hike["distance_mi"] for hike in group)
+            minutes = sum(hike["duration_min"] for hike in group)
+            average_distance = miles / len(group)
+            pace = minutes / miles
+            paces.append(pace)
+
+            bar = "█" * round(average_distance) #one block per mile
+            hike_word = "hike" if len(group) == 1 else "hikes" #plural vs singular
+            print(f"{month} {bar:<15} {average_distance:.1f} mi avg | {pace:.1f} min/mi | {len(group)} {hike_word}")
+
+            if len(paces) >= 2: #calculate change in paces by month
+                change = paces[0] - paces[-1]
+                if change > 0:
+                    print(f"\n Your pace improved by {change:.1f} min/mi since {sorted(months)[0]}.")
+                elif change < 0:
+                    print(f"\n Your pace slowed by {-change:.1f} min/mi since {sorted(months)[0]}.")
+                else:
+                    print("\n Your pace did not change")
+
+#personal records based on hikes.json file
+
+def longest_week_streak(hikes): #calculate week streaks
+    # ordinal -1 // 7 will give every date a week no. ; the set will remove the repeat numbers
+    weeks = sorted({
+        (datetime.strptime(hike["date"], "%Y-%m-%d").toordinal() - 1) // 7
+        for hike in hikes
+    })
+    best = current = 1
+    for i in range(1, len(weeks)):
+        if weeks[i] == weeks[ i - 1 ] + 1 :
+            current += 1
+        else:
+            current = 1
+        best = max(best, current)
+    return best
+
+def show_records(hikes):
+    if not hikes:
+        print("\n No hikes logged in yet")
+        return
+
+    longest = max(hikes, key=lambda hike: hike["distance_mi"])
+    longest_time = min(hikes, key=lambda hike: hike["duration_min"])
+    fastest = min(hikes, key=lambda hike: hike["duration_min"] / hike["distance_mi"])
+    fastest_pace = fastest["duration_min"] / fastest["distance_mi"]
+
+    #actual PR board gui
+    print("\n Personal Records")
+    print(f"Longest distance:  {longest['distance_mi']} mi ({longest['name']}, {longest['date']})")
+    print(f"Longest time:     {longest_time['duration_min']} min ({longest_time['name']}, {longest['date']})")
+    print(f"Fastest pace:     {fastest_pace:.1f} min/mi ({fastest['name']}, {fastest['date']})")
+
+    with_weather = [hike for hike in hikes if hike.get("weather")]
+    if with_weather:
+        coldest = min(with_weather, key=lambda hike: hike["weather"]["temp_f"])
+        hottest = max(with_weather, key=lambda hike: hike["weather"]["temp_f"])
+        print(f"Coldest hike:      {coldest['weather']['temp_f']}F ({hottest['name']}, ({hottest['date']})")
+
+        streak = longest_week_streak(hikes)
+        print(f"Longest streak:     {streak} week{'s' if streak != 1 else ''} in a row with a hike")
+        print()
+
+def clear_hikes(hikes):
+
+    if not hikes:
+        print("\n No hikes logged in yet")
+        return
+
+    print(f"\n This will permanently delete all {len(hikes)} hikes.")
+    confirm = input("Type DELETE to confirm").strip()
+
+    if confirm == "DELETE":
+        if os.path.exists(data_file):
+            shutil.copy(data_file, data_file + ".bak") #this creates a backup copy
+        hikes.clear()
+        save_hikes(hikes)
+        print("All hikes have been cleared. A backup was saved as hikes.json.bak")
+    else:
+        print("Cancelled. Nothing was deleted.")
+#main menu screen
 def main():
     hikes = load_hikes()
 
@@ -242,7 +338,9 @@ def main():
         print("1. Add a hike")
         print("2. List all hikes")
         print("3. Stats")
-        print("4. Quit")
+        print("4. Monthly Trends")
+        print("5. Personal Records")
+        print("6. Quit")
         choice = input("Enter your choice: ")
 
         if choice == "1":
@@ -252,6 +350,10 @@ def main():
         elif choice == "3":
             show_stats(hikes)
         elif choice == "4":
+            show_trends(hikes)
+        elif choice == "5":
+            show_records(hikes)
+        elif choice == "6":
             print("Enjoy Your Hike!")
             break
         else:
