@@ -6,3 +6,9 @@ hikes.json.bak
 .venv/
 __pycache__/
 *.pyc
+
+#pyinstaller
+
+build/
+dist/
+*.spec
