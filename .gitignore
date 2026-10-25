@@ -1,0 +1,8 @@
+# Personal hike data (use sample_hikes.json for demos)
+hikes.json
+hikes.json.bak
+
+# Python / environment
+.venv/
+__pycache__/
+*.pyc
